@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">LabAndroid</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="username">USERNAME</string>
+    <string name="password">PASSWORD</string>
+    <string name="log_in">LOG IN</string>
 </resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/LoginFragment"
+    >
+
+    <fragment
+        android:id="@+id/LoginFragment"
+        android:name="com.example.labandroid.auth.login.LoginFragment"
+        tools:layout="@layout/fragment_login" />
+
+    <fragment
+        android:id="@+id/ItemMasterFragment"
+        android:name="com.example.labandroid.items.master.ItemMasterFragment"
+        tools:layout="@layout/fragment_item_master">
+
+        <action
+            android:id="@+id/action_ItemMasterFragment_to_ItemDetailFragment"
+            app:destination="@id/ItemDetailFragment"
+            />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/ItemDetailFragment"
+        android:name="com.example.labandroid.items.detail.ItemDetailFragment"
+        tools:layout="@layout/fragment_item_detail">
+
+        <action
+            android:id="@+id/action_ItemDetailFragment_to_ItemMasterFragment"
+            app:destination="@id/ItemMasterFragment"
+            />
+    </fragment>
+</navigation>
