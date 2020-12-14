@@ -11,7 +11,9 @@ import java.time.format.DateTimeFormatter
 
 object API {
 
-    private const val BASE_URL = "http://192.168.1.3:3000/"
+    const val HOST = "192.168.1.2:3000"
+
+    private const val BASE_URL = "http://$HOST/"
 
     var tokenInterceptor = TokenInterceptor()
 

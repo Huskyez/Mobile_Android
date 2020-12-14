@@ -4,7 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.labandroid.items.data.Item
-import com.example.labandroid.items.data.ItemDatabase
+import com.example.labandroid.items.local.ItemDatabase
 import com.example.labandroid.items.data.ItemRepository
 import com.example.labandroid.utils.Result
 import com.example.labandroid.utils.TAG
@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 
 class ItemDetailViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val mutableItem = MutableLiveData<Item>().apply { value = Item("", "", LocalDateTime.now(), 0) }
+    private val mutableItem = MutableLiveData<Item>().apply { value = Item("", 0,"", LocalDateTime.now(), 0) }
     private val mutableFetching = MutableLiveData<Boolean>().apply { value = false }
     private val mutableCompleted = MutableLiveData<Boolean>().apply { value = false }
     private val mutableException = MutableLiveData<Exception>().apply { value = null }
@@ -30,8 +30,8 @@ class ItemDetailViewModel(application: Application) : AndroidViewModel(applicati
         itemRepo = ItemRepository(itemDao)
     }
 
-    fun loadItem(itemId: String) : LiveData<Item> {
-        return itemRepo.find(itemId)
+    fun loadItem(room_id: Int) : LiveData<Item> {
+        return itemRepo.find(room_id)
 //        viewModelScope.launch {
 //            Log.i(TAG, "loadItem...")
 //            mutableFetching.value = true
@@ -55,18 +55,13 @@ class ItemDetailViewModel(application: Application) : AndroidViewModel(applicati
 
             Log.i(TAG, "saveOrUpdateItem...")
 
-//            val item = mutableItem.value ?: return@launch
-//            item.text = newItem.text
-//            item.date = newItem.date
-//            item.version = newItem.version
-
             mutableFetching.value = true
             mutableException.value = null
 
             val result : Result<Item> = if (newItem._id.isNotEmpty()) {
-                itemRepo.update(newItem._id, Item(newItem._id, newItem.text, LocalDateTime.now(), newItem.version + 1))
+                itemRepo.update(newItem._id, Item(newItem._id, newItem.room_id, newItem.text, LocalDateTime.now(), newItem.version + 1))
             } else {
-                itemRepo.save(Item("", newItem.text, LocalDateTime.now(), 1))
+                itemRepo.save(Item("", newItem.room_id, newItem.text, LocalDateTime.now(), 1))
             }
 
             when (result) {
@@ -77,9 +72,6 @@ class ItemDetailViewModel(application: Application) : AndroidViewModel(applicati
                 }
                 else -> Log.d(TAG, "loading")
             }
-
-            mutableCompleted.value = true
-            mutableFetching.value = false
 
             mutableCompleted.value = true
             mutableFetching.value = false

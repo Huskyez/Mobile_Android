@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.labandroid.auth.AuthRepository
+import com.example.labandroid.auth.remote.AuthProxy
 import com.example.labandroid.auth.Token
 import com.example.labandroid.utils.API
 import com.example.labandroid.utils.TAG
@@ -25,10 +25,10 @@ class LoginViewModel : ViewModel() {
     fun login(username : String, password : String) {
         viewModelScope.launch {
             Log.d(TAG, "login")
-            val loginResult = AuthRepository.login(username, password)
+            val loginResult = AuthProxy.login(username, password)
             if (loginResult is Result.Success) {
                 API.tokenInterceptor.token = loginResult.data.token
-                Log.d(TAG, "token value: ${API.tokenInterceptor.token}")
+//                Log.d(TAG, "token value: ${API.tokenInterceptor.token}")
             }
             mutableResult.value = loginResult
         }

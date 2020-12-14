@@ -5,4 +5,6 @@
     <string name="username">USERNAME</string>
     <string name="password">PASSWORD</string>
     <string name="log_in">LOG IN</string>
+    <string name="shared_prefs_file">shared_prefs</string>
+    <integer name="private_mode">0</integer>
 </resources>

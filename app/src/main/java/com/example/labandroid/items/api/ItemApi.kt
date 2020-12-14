@@ -2,6 +2,7 @@ package com.example.labandroid.items.api
 
 import com.example.labandroid.items.data.Item
 import com.example.labandroid.utils.API
+import com.example.labandroid.utils.PaginationData
 import com.google.gson.*
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -16,7 +17,7 @@ object ItemApi {
     interface ApiService {
 
         @GET("api/item")
-        suspend fun getItems() : List<Item>
+        suspend fun getItems(@Header("page") page: Int, @Header("limit") limit: Int) : List<Item>
 
         @GET("api/item/{id}")
         suspend fun getItem(@Path("id") id: String) : Item
@@ -27,7 +28,6 @@ object ItemApi {
         @PUT("api/item/{id}")
         suspend fun updateItem(@Path("id") id: String, @Body item: Item) : Item
     }
-
 
     val itemService: ApiService = API.retrofit.create(ApiService::class.java)
 }

@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.labandroid.R
 import com.example.labandroid.items.data.Item
+import com.example.labandroid.utils.ConnectivityLiveData
 import com.example.labandroid.utils.TAG
 import kotlinx.android.synthetic.main.fragment_item_detail.*
 import java.time.LocalDateTime
@@ -20,19 +21,23 @@ class ItemDetailFragment : Fragment() {
 
     companion object {
         const val ITEM_ID = "ITEM_ID"
+        const val ROOM_ID = "ROOM_ID"
     }
 
 
     private lateinit var itemViewModel: ItemDetailViewModel
     private var itemId: String? = null
+    private var roomId: Int? = null
     private var item: Item? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(ITEM_ID)) {
                 itemId = it.get(ITEM_ID) as String?
+            }
+            if (it.containsKey(ROOM_ID)) {
+                roomId = it.get(ROOM_ID) as Int?
             }
         }
     }
@@ -45,26 +50,20 @@ class ItemDetailFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_item_detail, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         itemViewModel = ViewModelProvider(this).get(ItemDetailViewModel::class.java)
-//        itemViewModel.item.observe(viewLifecycleOwner, {
-//            Log.v(TAG, "update items - $it")
+
+//        connectivityLiveData = activity?.let { ConnectivityLiveData(it.getSystemService(android.net.ConnectivityManager::class.java)) }!!
 //
+//        connectivityLiveData.observe(viewLifecycleOwner, { connected ->
 //
-//            tv_id.text = it.id
-//            et_text.setText(it.text)
-////            date_picker.updateDate(it.date.year, it.date.month.value, it.date.dayOfMonth)
-//            tv_date.text = it.date.toString()
-//            tv_version.text = it.version.toString()
-//
-//            if (itemId != null) {
-//                button.text = "UPDATE"
-//            } else {
-//                button.text = "SAVE"
+//            if (connected) {
+//                itemViewModel
 //            }
 //        })
+
         itemViewModel.fetching.observe(viewLifecycleOwner, { fetching ->
             Log.v(TAG, "update fetching")
             progress.visibility = if (fetching) View.VISIBLE else View.GONE
@@ -73,9 +72,10 @@ class ItemDetailFragment : Fragment() {
         itemViewModel.fetchingError.observe(viewLifecycleOwner, { exception ->
             if (exception != null) {
                 Log.v(TAG, "update fetching error")
-                val message = "Fetching exception ${exception.message}"
+                val message = "${exception.message}"
                 Log.e(TAG, message)
-                val parentActivity = activity?.parent
+                val parentActivity = activity
+
                 if (parentActivity != null) {
                     Toast.makeText(parentActivity, message, Toast.LENGTH_SHORT).show()
                 }
@@ -89,19 +89,17 @@ class ItemDetailFragment : Fragment() {
             }
         })
 
-        if (itemId != null) {
-            itemViewModel.loadItem(itemId as String).observe(viewLifecycleOwner, {
+        if (roomId != null) {
+            itemViewModel.loadItem(roomId as Int).observe(viewLifecycleOwner, {
                 Log.d(TAG, "load item: $itemId")
                 if (it == null) {
                     return@observe
                 }
-
                 item = it
-
                 updateInterface()
             })
         } else {
-            item = Item("", "", LocalDateTime.now(), 0)
+            item = Item("", null,"", LocalDateTime.now(), 0)
             updateInterface()
         }
 
@@ -112,7 +110,7 @@ class ItemDetailFragment : Fragment() {
             val date = LocalDateTime.parse(tv_date.text)
             val version = Integer.parseInt(tv_version.text.toString())
 
-            val newItem = Item(id, text, date, version)
+            val newItem = Item(id, null, text, date, version)
 
             itemViewModel.saveOrUpdateItem(newItem)
         }

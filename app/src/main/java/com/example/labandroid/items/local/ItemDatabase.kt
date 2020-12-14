@@ -1,14 +1,21 @@
-package com.example.labandroid.items.data
+package com.example.labandroid.items.local
 
 import android.content.Context
 import androidx.room.*
+import com.example.labandroid.items.data.Item
+import com.example.labandroid.items.data.ItemRequestDb
+import com.example.labandroid.items.data.RemoteKeys
 import java.time.LocalDateTime
 
-@Database(entities = [Item::class], version = 1)
+@Database(entities = [Item::class, RemoteKeys::class], version = 3, exportSchema = false)
 @TypeConverters(LocalDateTimeConverter::class)
 abstract class ItemDatabase : RoomDatabase() {
 
     abstract fun itemDao() : ItemDao
+
+    abstract fun remoteKeysDao(): RemoteKeysDao
+
+//    abstract fun itemRequestsDao(): ItemRequestDao
 
     companion object {
 
@@ -21,7 +28,8 @@ abstract class ItemDatabase : RoomDatabase() {
                     context.applicationContext,
                     ItemDatabase::class.java,
                     "item_database"
-                ).build()
+                ).fallbackToDestructiveMigration()
+                .build()
                 instance = newInstance
                 return instance as ItemDatabase
             }

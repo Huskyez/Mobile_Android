@@ -1,5 +1,7 @@
-package com.example.labandroid.auth
+package com.example.labandroid.auth.remote
 
+import com.example.labandroid.auth.Token
+import com.example.labandroid.auth.User
 import com.example.labandroid.utils.API
 import retrofit2.http.Body
 import retrofit2.http.POST

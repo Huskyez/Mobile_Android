@@ -1,6 +1,7 @@
 package com.example.labandroid.items.api
 
 import android.util.Log
+import com.example.labandroid.utils.API
 import com.google.gson.Gson
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
@@ -12,7 +13,7 @@ object NotificationHandler {
     val eventChannel = Channel<String>()
 
     init {
-        val request = Request.Builder().url("ws://192.168.1.3:3000").build()
+        val request = Request.Builder().url("ws://${API.HOST}").build()
         val webSocket = OkHttpClient().newWebSocket(request, Listener())
     }
 
